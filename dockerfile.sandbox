@@ -1,0 +1,71 @@
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Dockerfile.sandbox
+# Multi-language isolated execution sandbox for the CIC compiler service.
+#
+# Build:
+#   docker build -f dockerfile.sandbox -t cic-sandbox:latest .
+# ─────────────────────────────────────────────────────────────────────────────
+
+FROM ubuntu:22.04
+
+LABEL org.opencontainers.image.title="CIC Code Execution Sandbox"
+LABEL org.opencontainers.image.description="Isolated multi-language runtime for the CIC compiler service"
+
+# ── Build-time environment ───────────────────────────────────────────────────
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=UTC \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    NODE_ENV=production \
+    ENV_JAVA_OPTIONS="-Xmx192m -Xms32m -XX:+UseSerialGC"
+
+# ── Install runtimes ─────────────────────────────────────────────────────────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    nodejs \
+    npm \
+    default-jdk-headless \
+    gcc \
+    g++ \
+    libc6-dev \
+    r-base \
+    r-base-dev \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# ── Verify runtimes ──────────────────────────────────────────────────────────
+RUN python3 --version \
+    && node --version \
+    && java -version 2>&1 \
+    && gcc --version \
+    && Rscript --version 2>&1
+
+# ── Upgrade pip ──────────────────────────────────────────────────────────────
+RUN python3 -m pip install --upgrade pip --quiet
+
+# ── Create sandbox user ──────────────────────────────────────────────────────
+RUN groupadd -r sandbox -g 1000 \
+    && useradd -r -g sandbox -u 1000 -m -d /home/sandbox -s /bin/sh sandbox
+
+# ── Working directory ────────────────────────────────────────────────────────
+WORKDIR /code
+
+RUN chown sandbox:sandbox /code
+
+# ── Runner script ────────────────────────────────────────────────────────────
+COPY runner.sh /runner.sh
+
+RUN chmod +x /runner.sh \
+    && chown sandbox:sandbox /runner.sh
+
+# ── Drop privileges ──────────────────────────────────────────────────────────
+USER sandbox
+
+# ── Default command ──────────────────────────────────────────────────────────
+CMD ["/bin/sh"]
+

@@ -1,0 +1,415 @@
+@import "tailwindcss";
+
+/* ==========================================
+   Root Theme Variables
+========================================== */
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  --bg-primary: #f2f2f4;
+  --bg-secondary: #ffffff;
+  --text-primary: #0f1012;
+  --text-secondary: #666666;
+  --border-color: rgba(0, 0, 0, 0.08);
+
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* ==========================================
+   Animations
+========================================== */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+/* ==========================================
+   Dark Mode Root
+   Requires:
+   document.documentElement.setAttribute(
+     "data-dark",
+     "true"
+   );
+========================================== */
+html[data-dark="true"] {
+  color-scheme: dark;
+
+  --bg-primary: #171717;
+  --bg-secondary: #1f1f1f;
+  --text-primary: #ededed;
+  --text-secondary: #aaaaaa;
+  --border-color: rgba(255, 255, 255, 0.14);
+}
+
+html[data-dark="true"],
+html[data-dark="true"] body,
+html[data-dark="true"] #root {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ==========================================
+   Background Utilities
+========================================== */
+html[data-dark="true"] .bg-white,
+html[data-dark="true"] .bg-white\/70,
+html[data-dark="true"] .bg-white\/80,
+html[data-dark="true"] .bg-white\/92,
+html[data-dark="true"] .bg-\[\#eef0f7\],
+html[data-dark="true"] .bg-\[\#ebedf0\],
+html[data-dark="true"] .bg-\[\#fafafa\],
+html[data-dark="true"] .bg-\[\#f8f8f8\],
+html[data-dark="true"] .bg-\[\#f5f5f7\],
+html[data-dark="true"] .bg-\[\#f4f4f9\],
+html[data-dark="true"] .bg-\[\#f0f7ff\],
+html[data-dark="true"] .bg-\[\#e9e9f2\],
+html[data-dark="true"] .bg-\[\#d9d9d9\],
+html[data-dark="true"] .bg-\[\#d9d9d9\]\/40 {
+  background-color: #1f1f1f !important;
+}
+
+html[data-dark="true"] .bg-\[\#f2f2f4\],
+html[data-dark="true"] .bg-\[\#f2f2f4\]\/90,
+html[data-dark="true"] .bg-\[\#171717\] {
+  background-color: #171717 !important;
+}
+
+html[data-dark="true"] .bg-\[\#f7f4ee\],
+html[data-dark="true"] .bg-\[\#f3f0ea\],
+html[data-dark="true"] .bg-\[\#ececf5\],
+html[data-dark="true"] .bg-\[\#e7e7f2\],
+html[data-dark="true"] .bg-\[\#d9dbef\],
+html[data-dark="true"] .bg-\[\#d8d9ee\] {
+  background-color: #242424 !important;
+}
+
+html[data-dark="true"] .bg-\[\#0f1012\],
+html[data-dark="true"] .bg-\[\#111\],
+html[data-dark="true"] .bg-\[\#111111\],
+html[data-dark="true"] .bg-\[\#1a1a1a\] {
+  background-color: #101010 !important;
+}
+
+html[data-dark="true"] .bg-black {
+  background-color: #050505 !important;
+}
+
+/* ==========================================
+   Gradients
+========================================== */
+html[data-dark="true"] .from-white,
+html[data-dark="true"] .from-\[\#ececf5\] {
+  --tw-gradient-from: #2c2c2c var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(44 44 44 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html[data-dark="true"] .via-\[\#e7e7f2\] {
+  --tw-gradient-via: #242424 var(--tw-gradient-via-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via),
+    var(--tw-gradient-to) !important;
+}
+
+html[data-dark="true"] .to-\[\#d9dbef\],
+html[data-dark="true"] .to-\[\#d8d9ee\] {
+  --tw-gradient-to: #171717 var(--tw-gradient-to-position) !important;
+}
+
+/* ==========================================
+   Surface Overlays
+========================================== */
+html[data-dark="true"] .bg-black\/\[0\.02\],
+html[data-dark="true"] .bg-black\/\[0\.03\],
+html[data-dark="true"] .bg-black\/\[0\.04\],
+html[data-dark="true"] .bg-black\/\[0\.05\],
+html[data-dark="true"] .bg-black\/\[0\.07\],
+html[data-dark="true"] .bg-black\/\[0\.08\],
+html[data-dark="true"] .bg-black\/5,
+html[data-dark="true"] .bg-black\/10 {
+  background-color: rgb(255 255 255 / 0.06) !important;
+}
+
+html[data-dark="true"] .hover\:bg-black\/\[0\.02\]:hover,
+html[data-dark="true"] .hover\:bg-black\/\[0\.04\]:hover,
+html[data-dark="true"] .hover\:bg-black\/\[0\.07\]:hover,
+html[data-dark="true"] .hover\:bg-black\/\[0\.08\]:hover,
+html[data-dark="true"] .hover\:bg-black\/10:hover,
+html[data-dark="true"] .hover\:bg-white:hover,
+html[data-dark="true"] .hover\:bg-white\/70:hover {
+  background-color: rgb(255 255 255 / 0.1) !important;
+}
+
+/* ==========================================
+   Borders
+========================================== */
+html[data-dark="true"] .border-black\/\[0\.05\],
+html[data-dark="true"] .border-black\/\[0\.08\],
+html[data-dark="true"] .border-black\/5 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-dark="true"] .border-black\/10,
+html[data-dark="true"] .border-\[\#d9dceb\],
+html[data-dark="true"] .border-blue-300,
+html[data-dark="true"] .border-green-300,
+html[data-dark="true"] .border-purple-300 {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+html[data-dark="true"] .border-black\/15 {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* ==========================================
+   Typography
+========================================== */
+html[data-dark="true"] .text-black,
+html[data-dark="true"] .text-\[\#0b1334\],
+html[data-dark="true"] .text-\[\#0f1012\],
+html[data-dark="true"] .text-\[\#111\],
+html[data-dark="true"] .text-\[\#111111\],
+html[data-dark="true"] .text-\[\#1a1a1a\],
+html[data-dark="true"] .text-\[\#333\],
+html[data-dark="true"] .text-\[\#444\] {
+  color: #ededed !important;
+}
+
+html[data-dark="true"] .text-\[\#555\],
+html[data-dark="true"] .text-\[\#5f5f5f\],
+html[data-dark="true"] .text-\[\#646983\],
+html[data-dark="true"] .text-\[\#666\],
+html[data-dark="true"] .text-\[\#70738a\],
+html[data-dark="true"] .text-\[\#777\],
+html[data-dark="true"] .text-\[\#8f8f8f\],
+html[data-dark="true"] .text-\[\#aaa\],
+html[data-dark="true"] .text-\[\#aaaaaa\],
+html[data-dark="true"] .text-\[\#bbb\] {
+  color: #aaaaaa !important;
+}
+
+html[data-dark="true"] .text-\[\#2140ff\],
+html[data-dark="true"] .text-\[\#4152ff\],
+html[data-dark="true"] .text-\[\#0071e3\] {
+  color: #66aaff !important;
+}
+
+/* ==========================================
+   Forms
+========================================== */
+html[data-dark="true"] input,
+html[data-dark="true"] select,
+html[data-dark="true"] textarea {
+  appearance: none;
+  background-color: #242424 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #ededed !important;
+  caret-color: #ededed;
+}
+
+html[data-dark="true"] input[type="file"] {
+  color: #aaaaaa !important;
+}
+
+html[data-dark="true"] option {
+  background: #242424;
+  color: #ededed;
+}
+
+html[data-dark="true"] input::placeholder,
+html[data-dark="true"] textarea::placeholder {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+
+html[data-dark="true"] input:focus,
+html[data-dark="true"] select:focus,
+html[data-dark="true"] textarea:focus {
+  border-color: #66aaff !important;
+  box-shadow: 0 0 0 3px rgb(102 170 255 / 0.14);
+}
+
+html[data-dark="true"] .font-mono {
+  color: inherit;
+}
+
+/* ==========================================
+   Tables
+========================================== */
+html[data-dark="true"] table,
+html[data-dark="true"] thead,
+html[data-dark="true"] tbody,
+html[data-dark="true"] tr {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-dark="true"] th,
+html[data-dark="true"] td {
+  color: inherit;
+}
+
+/* ==========================================
+   Recharts
+========================================== */
+html[data-dark="true"] .recharts-text,
+html[data-dark="true"] .recharts-cartesian-axis-tick-value,
+html[data-dark="true"] .recharts-legend-item-text {
+  fill: #aaaaaa !important;
+}
+
+html[data-dark="true"] .recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: #1f1f1f !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #ededed !important;
+}
+
+html[data-dark="true"] .recharts-tooltip-label,
+html[data-dark="true"] .recharts-tooltip-item {
+  color: #ededed !important;
+}
+
+/* ==========================================
+   Shadows
+========================================== */
+html[data-dark="true"] .shadow-sm,
+html[data-dark="true"] .shadow-md,
+html[data-dark="true"] .shadow-lg,
+html[data-dark="true"] .shadow-xl,
+html[data-dark="true"] .shadow-2xl,
+html[data-dark="true"] .shadow-\[0_20px_50px_rgba\(0\,0\,0\,0\.08\)\],
+html[data-dark="true"] .shadow-\[0_25px_80px_rgba\(0\,0\,0\,0\.08\)\] {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5) !important;
+}
+
+html[data-dark="true"] .bg-white.shadow-sm,
+html[data-dark="true"] .bg-white.shadow-md {
+  background-color: #333333 !important;
+  color: #ededed !important;
+}
+
+/* ==========================================
+   Status Badges, Tinted Panels & Pills
+   (e.g. difficulty tags, alerts, test-case
+   forms, profile accents that use raw
+   Tailwind palette colors or one-off hexes)
+========================================== */
+html[data-dark="true"] .bg-red-50,
+html[data-dark="true"] .bg-red-100 {
+  background-color: rgba(255, 141, 141, 0.12) !important;
+}
+
+html[data-dark="true"] .bg-green-50,
+html[data-dark="true"] .bg-green-100 {
+  background-color: rgba(125, 255, 171, 0.1) !important;
+}
+
+html[data-dark="true"] .bg-blue-50,
+html[data-dark="true"] .bg-blue-100 {
+  background-color: rgba(102, 170, 255, 0.1) !important;
+}
+
+html[data-dark="true"] .bg-purple-50,
+html[data-dark="true"] .bg-purple-100 {
+  background-color: rgba(187, 154, 255, 0.1) !important;
+}
+
+html[data-dark="true"] .bg-yellow-50,
+html[data-dark="true"] .bg-yellow-100 {
+  background-color: rgba(255, 212, 79, 0.12) !important;
+}
+
+html[data-dark="true"] .border-red-200,
+html[data-dark="true"] .border-blue-200,
+html[data-dark="true"] .border-green-200,
+html[data-dark="true"] .border-purple-200,
+html[data-dark="true"] .border-yellow-200 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html[data-dark="true"] .text-red-700,
+html[data-dark="true"] .text-red-900 {
+  color: #ff8d8d !important;
+}
+
+html[data-dark="true"] .text-green-700,
+html[data-dark="true"] .text-green-900 {
+  color: #7dffab !important;
+}
+
+html[data-dark="true"] .text-yellow-700,
+html[data-dark="true"] .text-yellow-900 {
+  color: #ffd54f !important;
+}
+
+html[data-dark="true"] .text-blue-900 {
+  color: #66aaff !important;
+}
+
+html[data-dark="true"] .text-purple-900 {
+  color: #c9b3ff !important;
+}
+
+/* Bronze podium accent on the leaderboard */
+html[data-dark="true"] .bg-\[\#d7a56c\]\/20 {
+  background-color: rgba(215, 165, 108, 0.16) !important;
+}
+
+html[data-dark="true"] .text-\[\#8b5a2b\] {
+  color: #e3b27e !important;
+}
+
+/* ==========================================
+   Scrollbars
+========================================== */
+html[data-dark="true"] * {
+  scrollbar-width: thin;
+  scrollbar-color: #444444 #171717;
+}
+
+html[data-dark="true"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html[data-dark="true"] ::-webkit-scrollbar-track {
+  background: #171717;
+}
+
+html[data-dark="true"] ::-webkit-scrollbar-thumb {
+  background: #444444;
+  border-radius: 999px;
+}
+
+html[data-dark="true"] ::-webkit-scrollbar-thumb:hover {
+  background: #666666;
+}

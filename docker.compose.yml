@@ -1,0 +1,114 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# docker-compose.yml – CIC Platform
+#
+# Services:
+#   api        – Express / Node.js backend  (builds from ./Dockerfile)
+#   mongodb    – Persistent database
+#
+# The sandbox image (cic-sandbox:latest) is pre-built separately:
+#   docker build -f Dockerfile.sandbox -t cic-sandbox:latest .
+#
+# ⚠️  The API container is given access to the Docker socket so it can spawn
+#     sandbox containers at runtime.  Mount the socket read-only and consider
+#     a socket proxy (e.g. Tecnativa docker-socket-proxy) in production.
+#
+# Quick start:
+#   cp .env.example .env            # fill in secrets
+#   docker build -f Dockerfile.sandbox -t cic-sandbox:latest .
+#   docker-compose up -d
+# ─────────────────────────────────────────────────────────────────────────────
+version: '3.9'
+
+services:
+
+  # ── API server ──────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: dockerfile.sandbox           # your main API Dockerfile
+    container_name: cic_api
+    restart: unless-stopped
+    ports:
+      - '${PORT:-5000}:5000'
+
+    environment:
+      NODE_ENV:               ${NODE_ENV:-production}
+      PORT:                   5000
+      MONGO_URI:              ${MONGO_URI}
+      JWT_SECRET:             ${JWT_SECRET}
+      JWT_EXPIRE:             ${JWT_EXPIRE:-30d}
+
+      # ── Compiler sandbox config ──────────────────────────────────────────
+      # Path inside the API container where session dirs are created.
+      COMPILER_TEMP_PATH:      /tmp/cic_compiler
+      # The SAME path as seen by the Docker daemon (host side of the bind mount).
+      # Because we use a bind-mount below, both sides share /tmp/cic_compiler.
+      COMPILER_TEMP_HOST_PATH: /tmp/cic_compiler
+      SANDBOX_IMAGE:           cic-sandbox:latest
+      EXEC_TIMEOUT_MS:         10000
+
+    volumes:
+      # ── Docker socket (sandbox spawning) ──────────────────────────────────
+      # The API needs to call `docker run` to create sandboxed containers.
+      # The socket is mounted read-only at the OS level; Docker itself enforces
+      # access control.  Use a socket proxy for stricter production hardening.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+      # ── Shared compiler temp dir ─────────────────────────────────────────
+      # CRITICAL: this MUST be a bind-mount (not a named volume) so that paths
+      # the API creates at /tmp/cic_compiler/<session> are identical on both
+      # sides of the `-v` flag that the API passes to `docker run`.
+      # Named volumes are managed by Docker and have opaque host paths.
+      - type: bind
+        source: /tmp/cic_compiler      # host path — create if absent: mkdir -p /tmp/cic_compiler
+        target: /tmp/cic_compiler      # container path  (= COMPILER_TEMP_PATH)
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    networks:
+      - internal
+
+    # Resource caps for the API process itself (sandbox containers have
+    # their own caps set via docker run flags in compiler.js)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 512M
+
+  # ── MongoDB ─────────────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    container_name: cic_mongo
+    restart: unless-stopped
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS:-changeme}
+      MONGO_INITDB_DATABASE:      ${MONGO_DB:-cic}
+
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout:  5s
+      retries:  5
+      start_period: 20s
+
+    networks:
+      - internal
+
+# ── Volumes ───────────────────────────────────────────────────────────────────
+volumes:
+  mongo_data:
+  mongo_config:
+
+# ── Networks ──────────────────────────────────────────────────────────────────
+networks:
+  internal:
+    driver: bridge
