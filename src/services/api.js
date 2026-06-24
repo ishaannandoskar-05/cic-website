@@ -1,4 +1,6 @@
-const API_BASE_URL = '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api` 
+  : '/api';
 
 // Request helper that handles headers and returns responses
 const request = async (url, options = {}) => {
