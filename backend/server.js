@@ -135,19 +135,9 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/compiler', compilerRoutes);
 
-// ── Serve Frontend ─────────────────────────────────────────────
-if (process.env.NODE_ENV === 'production') {
-  const frontendDistPath = path.join(__dirname, '..', 'dist');
-  app.use(express.static(frontendDistPath));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendDistPath, 'index.html'));
-  });
-} else {
-  app.get('/', (req, res) => {
-    res.send('CIC Portal Backend is running successfully!');
-  });
-}
+app.get('/', (req, res) => {
+  res.send('CIC Portal Backend is running successfully!');
+});
 
 // ── Global error handler — never leaks stack traces in production ──
 app.use((err, req, res, next) => {
