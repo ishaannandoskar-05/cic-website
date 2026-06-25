@@ -1,4 +1,7 @@
-const rawApiUrl = import.meta.env.VITE_API_URL || '';
+// Fallback to Render URL in production if Netlify env var is missing
+const defaultProdUrl = 'https://cic-website.onrender.com';
+const rawApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultProdUrl : '');
+
 const cleanApiUrl = rawApiUrl.replace(/\/$/, '').replace(/\/api$/, '');
 const API_BASE_URL = cleanApiUrl 
   ? `${cleanApiUrl}/api` 
