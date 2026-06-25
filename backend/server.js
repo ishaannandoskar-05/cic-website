@@ -47,9 +47,10 @@ connectDB();
 const app = express();
 
 // ── CORS ──────────────────────────────────────────────────────
+const envOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim().replace(/\/$/, '')).filter(Boolean);
 const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
-  ? (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim().replace(/\/$/, '')).filter(Boolean)
-  : ['http://localhost:5173', 'http://localhost:3000'];
+  ? [...envOrigins, 'https://cic-club-nhitm.netlify.app']
+  : ['http://localhost:5173', 'http://localhost:3000', 'https://cic-club-nhitm.netlify.app'];
 
 app.use(cors({
   origin: (origin, callback) => {
