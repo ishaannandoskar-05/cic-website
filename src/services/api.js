@@ -1,10 +1,7 @@
-// Fallback to Render URL in production if Netlify env var is missing
-const defaultProdUrl = 'https://cic-website.onrender.com';
-const rawApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultProdUrl : '');
-
-const cleanApiUrl = rawApiUrl.replace(/\/$/, '').replace(/\/api$/, '');
-const API_BASE_URL = cleanApiUrl 
-  ? `${cleanApiUrl}/api` 
+// In production, ALWAYS use the Render backend. Locally, use the Vite proxy.
+const isProd = import.meta.env.PROD;
+const API_BASE_URL = isProd 
+  ? 'https://cic-website.onrender.com/api' 
   : '/api';
 
 // Request helper that handles headers and returns responses

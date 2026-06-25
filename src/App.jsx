@@ -316,7 +316,8 @@ function AuthPage() {
     }
   }, [user, navigate]);
 
-  const handleAuth = async () => {
+  const handleAuth = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     setError("");
 
     if (isSignup) {
@@ -492,8 +493,8 @@ function AuthPage() {
               </div>
             )}
 
-            {/* INPUTS */}
-            <div className="space-y-4">
+            {/* INPUTS AND BUTTON IN A FORM */}
+            <form onSubmit={handleAuth} className="space-y-4">
               {isSignup ? (
                 <>
                   <input
@@ -571,34 +572,34 @@ function AuthPage() {
                   />
                 </>
               )}
-            </div>
 
-            {/* BUTTON */}
-            <button
-              onClick={handleAuth}
-              className={`
-                w-full
-                h-[52px]
-                rounded-[14px]
-                text-[15px]
-                font-medium
-                text-white
-                transition-all
-                duration-300
-                mt-6
-                ${
-                  tab === "student"
-                    ? "bg-[#2140ff] hover:bg-[#1837f2]"
-                    : "bg-[#111] hover:bg-black"
-                }
-              `}
-            >
-              {isSignup
-                ? "Create Account"
-                : tab === "student"
-                  ? "Sign In"
-                  : "Access Dashboard"}
-            </button>
+              {/* BUTTON */}
+              <button
+                type="submit"
+                className={`
+                  w-full
+                  h-[52px]
+                  rounded-[14px]
+                  text-[15px]
+                  font-medium
+                  text-white
+                  transition-all
+                  duration-300
+                  mt-6
+                  ${
+                    tab === "student"
+                      ? "bg-[#2140ff] hover:bg-[#1837f2]"
+                      : "bg-[#111] hover:bg-black"
+                  }
+                `}
+              >
+                {isSignup
+                  ? "Create Account"
+                  : tab === "student"
+                    ? "Sign In"
+                    : "Access Dashboard"}
+              </button>
+            </form>
 
             {/* FOOTER */}
             <p
