@@ -48,7 +48,7 @@ const app = express();
 
 // ── CORS ──────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
-  ? (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean)
+  ? (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim().replace(/\/$/, '')).filter(Boolean)
   : ['http://localhost:5173', 'http://localhost:3000'];
 
 app.use(cors({
