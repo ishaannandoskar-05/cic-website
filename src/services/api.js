@@ -1,9 +1,8 @@
 // In production, ALWAYS use the Render backend. Locally, use the Vite proxy.
 const isProd = import.meta.env.PROD;
-const API_BASE_URL = isProd 
-  ? 'https://cic-website.onrender.com/api' 
+const API_BASE_URL = isProd
+  ? `${import.meta.env.VITE_API_URL || 'https://cic-website.onrender.com'}/api`
   : '/api';
-
 // Request helper that handles headers and returns responses
 const request = async (url, options = {}) => {
   const token = localStorage.getItem('token');
@@ -40,24 +39,24 @@ const request = async (url, options = {}) => {
 
 export const api = {
   auth: {
-    login: (email, password) => 
+    login: (email, password) =>
       request('/auth/login', {
         method: 'POST',
         body: { email, password },
       }),
-    
-    register: (userData) => 
+
+    register: (userData) =>
       request('/auth/register', {
         method: 'POST',
         body: userData,
       }),
-    
-    getMe: () => 
+
+    getMe: () =>
       request('/auth/me', {
         method: 'GET',
       }),
-      
-    updateProfile: (profileData) => 
+
+    updateProfile: (profileData) =>
       request('/auth/profile', {
         method: 'PUT',
         body: profileData,
@@ -66,17 +65,17 @@ export const api = {
 
   announcements: {
     getAll: () => request('/announcements'),
-    create: (data) => 
+    create: (data) =>
       request('/announcements', {
         method: 'POST',
         body: data,
       }),
-    update: (id, data) => 
+    update: (id, data) =>
       request(`/announcements/${id}`, {
         method: 'PUT',
         body: data,
       }),
-    delete: (id) => 
+    delete: (id) =>
       request(`/announcements/${id}`, {
         method: 'DELETE',
       }),
@@ -84,17 +83,17 @@ export const api = {
 
   events: {
     getAll: () => request('/events'),
-    create: (data) => 
+    create: (data) =>
       request('/events', {
         method: 'POST',
         body: data,
       }),
-    update: (id, data) => 
+    update: (id, data) =>
       request(`/events/${id}`, {
         method: 'PUT',
         body: data,
       }),
-    delete: (id) => 
+    delete: (id) =>
       request(`/events/${id}`, {
         method: 'DELETE',
       }),
@@ -102,17 +101,17 @@ export const api = {
 
   resources: {
     getAll: () => request('/resources'),
-    create: (formData) => 
+    create: (formData) =>
       request('/resources', {
         method: 'POST',
         body: formData,
       }),
-    update: (id, formData) => 
+    update: (id, formData) =>
       request(`/resources/${id}`, {
         method: 'PUT',
         body: formData,
       }),
-    delete: (id) => 
+    delete: (id) =>
       request(`/resources/${id}`, {
         method: 'DELETE',
       }),
@@ -121,17 +120,17 @@ export const api = {
   gallery: {
     getAll: () => request('/gallery'),
     getStats: () => request('/gallery/stats'),
-    create: (formData) => 
+    create: (formData) =>
       request('/gallery', {
         method: 'POST',
         body: formData,
       }),
-    update: (id, data) => 
+    update: (id, data) =>
       request(`/gallery/${id}`, {
         method: 'PUT',
         body: data,
       }),
-    delete: (id) => 
+    delete: (id) =>
       request(`/gallery/${id}`, {
         method: 'DELETE',
       }),
@@ -140,31 +139,31 @@ export const api = {
   quests: {
     getAll: () => request('/quests'),
     getDaily: () => request('/quests/daily'),
-    create: (data) => 
+    create: (data) =>
       request('/quests', {
         method: 'POST',
         body: data,
       }),
-    update: (id, data) => 
+    update: (id, data) =>
       request(`/quests/${id}`, {
         method: 'PUT',
         body: data,
       }),
-    delete: (id) => 
+    delete: (id) =>
       request(`/quests/${id}`, {
         method: 'DELETE',
       }),
   },
 
   submissions: {
-    submit: (questId, codeData) => 
+    submit: (questId, codeData) =>
       request(`/submissions/${questId}/submit`, {
         method: 'POST',
         body: codeData,
       }),
     getMySubmissions: () => request('/submissions/my-submissions'),
     getAll: () => request('/submissions'),
-    review: (id, reviewData) => 
+    review: (id, reviewData) =>
       request(`/submissions/${id}/review`, {
         method: 'PUT',
         body: reviewData,
@@ -173,7 +172,7 @@ export const api = {
 
   members: {
     getAll: () => request('/members'),
-    delete: (id) => 
+    delete: (id) =>
       request(`/members/${id}`, {
         method: 'DELETE',
       }),
@@ -208,6 +207,6 @@ export const api = {
       body: { language, code },
     }),
     getTemplates: () => request('/compiler/templates'),
-    getRuntimes:  () => request('/compiler/runtimes'),
+    getRuntimes: () => request('/compiler/runtimes'),
   },
 };

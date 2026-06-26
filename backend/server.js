@@ -42,7 +42,7 @@ if (process.env.JWT_SECRET.length < 32) {
 }
 
 // Connect to Database
-connectDB();
+await connectDB();
 
 const app = express();
 

@@ -500,6 +500,7 @@ function AuthPage() {
                   <input
                     type="text"
                     placeholder="Full Name"
+                    autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -508,6 +509,7 @@ function AuthPage() {
                   <input
                     type="text"
                     placeholder="IEN Number"
+                    autoComplete="username"
                     value={ien}
                     onChange={(e) => setIen(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -520,6 +522,7 @@ function AuthPage() {
                         ? "Institute / College email (@nhitm.ac.in)"
                         : "Admin Email"
                     }
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -528,6 +531,7 @@ function AuthPage() {
                   <input
                     type="password"
                     placeholder="Password"
+                    autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -536,6 +540,7 @@ function AuthPage() {
                   <input
                     type="password"
                     placeholder="Confirm Password"
+                    autoComplete="new-password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -545,6 +550,7 @@ function AuthPage() {
                     <input
                       type="password"
                       placeholder="Admin Security Key"
+                      autoComplete="new-password"
                       value={adminSecretKey}
                       onChange={(e) => setAdminSecretKey(e.target.value)}
                       className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -558,6 +564,7 @@ function AuthPage() {
                     placeholder={
                       tab === "student" ? "Student email" : "Admin email"
                     }
+                    autoComplete="username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
@@ -566,6 +573,7 @@ function AuthPage() {
                   <input
                     type="password"
                     placeholder="Password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`w-full h-[52px] rounded-[13px] border border-[#d9dceb] ${dark ? "bg-[#1e1e1e]" : "bg-white"} px-4 text-[14px] outline-none`}
