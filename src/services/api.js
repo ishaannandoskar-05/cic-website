@@ -1,7 +1,16 @@
 // In production, ALWAYS use the Render backend. Locally, use the Vite proxy.
 const isProd = import.meta.env.PROD;
+
+if (isProd && !import.meta.env.VITE_API_URL) {
+  console.error(
+    '[CIC] VITE_API_URL is not set! API calls will fail. ' +
+    'Set VITE_API_URL in your Netlify environment variables to your Render backend URL, e.g.: ' +
+    'https://cic-portal-backend.onrender.com'
+  );
+}
+
 const API_BASE_URL = isProd
-  ? `${import.meta.env.VITE_API_URL || 'https://cic-website.onrender.com'}/api`
+  ? `${import.meta.env.VITE_API_URL || ''}/api`
   : '/api';
 // Request helper that handles headers and returns responses
 const request = async (url, options = {}) => {
