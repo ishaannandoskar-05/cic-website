@@ -11,7 +11,7 @@ router.get('/', protect, async (req, res) => {
   try {
     const announcements = await Announcement.find({}).sort({ createdAt: -1 });
     res.json(announcements);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -35,7 +35,7 @@ router.post('/', protect, admin, async (req, res) => {
 
     const createdAnnouncement = await announcement.save();
     res.status(201).json(createdAnnouncement);
-  } catch (error) {
+  } catch {
     res.status(400).json({ message: 'Invalid announcement data' });
   }
 });
@@ -59,7 +59,7 @@ router.put('/:id', protect, admin, async (req, res) => {
     } else {
       res.status(404).json({ message: 'Announcement not found' });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -77,7 +77,7 @@ router.delete('/:id', protect, admin, async (req, res) => {
     } else {
       res.status(404).json({ message: 'Announcement not found' });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

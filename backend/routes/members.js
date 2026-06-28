@@ -12,7 +12,7 @@ router.get('/', protect, admin, async (req, res) => {
     // Return all members except passwords, sorted by XP desc
     const members = await User.find({}).select('-password').sort({ xp: -1 });
     res.json(members);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -37,7 +37,7 @@ router.patch('/:id/xp', protect, admin, async (req, res) => {
 
     await user.save();
     res.json({ _id: user._id, name: user.name, xp: user.xp });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -58,7 +58,7 @@ router.delete('/:id', protect, admin, async (req, res) => {
     } else {
       res.status(404).json({ message: 'User not found' });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

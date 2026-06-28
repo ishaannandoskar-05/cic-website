@@ -69,7 +69,7 @@ router.get('/my-submissions', protect, async (req, res) => {
       .populate('quest', 'title difficulty')
       .sort({ createdAt: -1 });
     res.json(submissions);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -84,7 +84,7 @@ router.get('/', protect, admin, async (req, res) => {
       .populate('quest', 'title difficulty')
       .sort({ createdAt: -1 });
     res.json(submissions);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -12,7 +12,7 @@ router.get('/', protect, async (req, res) => {
   try {
     const resources = await Resource.find({}).sort({ createdAt: -1 });
     res.json(resources);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -76,7 +76,7 @@ router.put('/:id', protect, admin, upload.single('image'), async (req, res) => {
     } else {
       res.status(404).json({ message: 'Resource not found' });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -94,7 +94,7 @@ router.delete('/:id', protect, admin, async (req, res) => {
     } else {
       res.status(404).json({ message: 'Resource not found' });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

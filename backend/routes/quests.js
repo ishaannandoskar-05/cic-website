@@ -16,7 +16,7 @@ router.get("/", protect, async (req, res) => {
   try {
     const quests = await Quest.find({}).sort({ createdAt: -1 });
     res.json(quests);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -33,7 +33,7 @@ router.get("/daily", protect, async (req, res) => {
     const quest = dailyQuest.toObject();
     delete quest.hiddenTestcases;
     res.json(quest);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -163,7 +163,7 @@ router.delete("/:id", protect, admin, async (req, res) => {
     } else {
       res.status(404).json({ message: "Quest not found" });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });

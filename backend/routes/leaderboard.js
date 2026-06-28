@@ -25,7 +25,7 @@ router.get('/', protect, async (req, res) => {
     }));
 
     res.json(rankings);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

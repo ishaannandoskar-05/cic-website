@@ -46,7 +46,7 @@ export const uploadImage = async (file, folder = 'cic_portal') => {
 
   if (hasCloudinary) {
     try {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           { folder },
           (error, result) => {

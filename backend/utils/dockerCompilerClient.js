@@ -250,7 +250,6 @@ return 0;
 export const executeCode = async (
   language,
   source,
-  stdin = "",
   timeoutMs = 8000,
 ) => {
   let extension;
@@ -327,7 +326,9 @@ EOF
           if (container) {
             await container.kill();
           }
-        } catch (_) {}
+        } catch {
+          /* ignore */
+        }
 
         reject(new Error("Execution timeout"));
       }, timeoutMs);
@@ -344,14 +345,18 @@ EOF
 
     let output = logs.toString("utf8");
 
+    /* eslint-disable no-control-regex */
     output = output
       .replace(/Picked up JAVA_TOOL_OPTIONS:.*\n?/g, "")
       .replace(/Picked up _JAVA_OPTIONS:.*\n?/g, "")
       .replace(/^[\x00-\x08\x0B\x0C\x0E-\x1F]+/, "")
       .trim();
+    /* eslint-enable no-control-regex */
     try {
       await container.remove({ force: true });
-    } catch {}
+    } catch {
+      /* ignore */
+    }
 
     return {
       output,

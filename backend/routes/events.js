@@ -39,7 +39,7 @@ router.get("/", protect, async (req, res) => {
   try {
     const events = await Event.find({}).sort({ date: 1 });
     res.json(events);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -99,7 +99,7 @@ router.put("/:id", protect, admin, async (req, res) => {
 
     const updated = await event.save();
     res.json(updated);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -113,7 +113,7 @@ router.delete("/:id", protect, admin, async (req, res) => {
     if (!event) return res.status(404).json({ message: "Event not found" });
     await event.deleteOne();
     res.json({ message: "Event removed" });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -145,7 +145,7 @@ router.post("/:id/register", protect, async (req, res) => {
       message: "Registered successfully.",
       registrationCount: event.registrationCount,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -166,7 +166,7 @@ router.delete("/:id/register", protect, async (req, res) => {
       message: "Unregistered successfully.",
       registrationCount: event.registrationCount,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 });

@@ -11,11 +11,7 @@ import { protect, admin } from "../middleware/auth.js";
 const router = express.Router();
 
 // IST is UTC+5:30. Convert any Date to a YYYY-MM-DD string in IST.
-const toISTDateKey = (date) => {
-  const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
-  const istDate = new Date(new Date(date).getTime() + IST_OFFSET_MS);
-  return istDate.toISOString().split("T")[0];
-};
+
 
 // @desc    Temporary debug route — REMOVE BEFORE PRODUCTION
 // @route   GET /api/analytics/debug

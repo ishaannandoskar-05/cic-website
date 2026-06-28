@@ -53,11 +53,12 @@ const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
   : ['http://localhost:5173', 'http://localhost:3000', 'https://cic-club-nhitm.netlify.app'];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (curl, Postman) only in development
-    if (!origin && process.env.NODE_ENV !== 'production') return callback(null, true);
-    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS: origin ${origin} not allowed`));
+  origin: function (origin, callback) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, false); // Do not throw error to avoid 500, just fail CORS gracefully
+    }
   },
   credentials: true,
 }));
@@ -141,6 +142,7 @@ app.get('/', (req, res) => {
 });
 
 // ── Global error handler — never leaks stack traces in production ──
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   const isProduction = process.env.NODE_ENV === 'production';

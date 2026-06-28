@@ -30,7 +30,7 @@ router.get('/stats', protect, async (req, res) => {
     };
 
     res.json(stats);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -42,7 +42,7 @@ router.get('/', protect, async (req, res) => {
   try {
     const galleryItems = await Gallery.find({}).sort({ createdAt: -1 });
     res.json(galleryItems);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -98,7 +98,7 @@ router.put('/:id', protect, admin, async (req, res) => {
 
     const updatedItem = await galleryItem.save();
     res.json(updatedItem);
-  } catch (error) {
+  } catch {
     res.status(400).json({ message: 'Invalid gallery data' });
   }
 });
@@ -116,7 +116,7 @@ router.delete('/:id', protect, admin, async (req, res) => {
     } else {
       res.status(404).json({ message: 'Gallery item not found' });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

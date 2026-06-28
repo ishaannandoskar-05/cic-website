@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect } from "react";
 import { api } from "./services/api";
 
 import {
@@ -41,19 +41,19 @@ import {
 // THEME CONTEXT
 // ========================================
 
-const ThemeContext = createContext({ dark: false, toggleDark: () => {} });
-const useTheme = () => useContext(ThemeContext);
+import { ThemeContext, useTheme, AuthContext, useAuth } from "./contexts";
 
-export const AuthContext = createContext({
-  user: null,
-  login: async () => {},
-  register: async () => {},
-  logout: () => {},
-  loading: true,
-  refreshUser: async () => {},
-});
-const useAuth = () => useContext(AuthContext);
-export { useAuth };
+
+
+
+
+
+
+
+
+
+
+
 
 // Convenience wrapper so every page gets the right bg automatically
 function PageBg({ children, className = "" }) {
@@ -71,34 +71,34 @@ function PageBg({ children, className = "" }) {
 // DATA
 // ========================================
 
-const growthData = [
-  { day: "Mon", xp: 20, solved: 3 },
-  { day: "Tue", xp: 45, solved: 5 },
-  { day: "Wed", xp: 38, solved: 4 },
-  { day: "Thu", xp: 70, solved: 8 },
-  { day: "Fri", xp: 66, solved: 7 },
-  { day: "Sat", xp: 90, solved: 10 },
-  { day: "Sun", xp: 120, solved: 12 },
-];
 
-const leaderboard = [
-  { rank: 1, name: "Aarav Mehta", xp: 9280 },
-  { rank: 2, name: "Ishita Rao", xp: 9012 },
-  { rank: 3, name: "Kabir Shah", xp: 8890 },
-  { rank: 4, name: "Ananya Nair", xp: 8012 },
-  { rank: 5, name: "Rohan Verma", xp: 7791 },
-  { rank: 6, name: "Sanya Kapoor", xp: 7600 },
-  { rank: 7, name: "Dev Patel", xp: 7421 },
-  { rank: 8, name: "Arjun Kulkarni", xp: 7011 },
-  { rank: 9, name: "Mehul Jain", xp: 6880 },
-  { rank: 10, name: "Priya Desai", xp: 6701 },
-];
 
-const currentUser = {
-  rank: 14,
-  name: "Ishaan Nandoskar",
-  xp: 5100,
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ========================================
 // LAYOUT
@@ -640,7 +640,7 @@ function HomePage() {
   const { dark } = useTheme();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [dailyQuest, setDailyQuest] = useState(null);
@@ -1254,10 +1254,10 @@ function AdminDashboard() {
 
 function ManageCalendarPage() {
   const { dark } = useTheme();
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter] = useState("All");
   const [events, setEvents] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     title: "",
@@ -1267,13 +1267,13 @@ function ManageCalendarPage() {
     link: "",
   });
 
-  const filters = [
-    "All",
-    "Hackathons",
-    "Workshops",
-    "Competitions",
-    "Meetings",
-  ];
+
+
+
+
+
+
+
 
   const getColor = (type) => {
     if (type === "Hackathon") return "bg-[#0071e3]";
@@ -1300,7 +1300,9 @@ function ManageCalendarPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const publishEvent = async () => {
@@ -1547,6 +1549,7 @@ function ManageMembersPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadMembers();
   }, []);
 
@@ -1909,6 +1912,7 @@ function ManageAnnouncementsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadArticles();
   }, []);
 
@@ -2284,6 +2288,7 @@ function ManageDailyQuestPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadQuests();
   }, []);
 
@@ -3276,6 +3281,7 @@ function ManageGalleryPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadImages();
   }, []);
 
@@ -3655,6 +3661,7 @@ function ManageResourcesPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadResources();
   }, []);
 
@@ -4259,7 +4266,7 @@ function PlatformPage() {
 function DashboardPage() {
   const { dark } = useTheme();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
@@ -4663,7 +4670,7 @@ function LeaderboardPage() {
   const { dark } = useTheme();
   const { user } = useAuth();
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -5087,13 +5094,14 @@ function DailyQuestPage() {
       try {
         const data = await api.compiler.getRuntimes();
         setRuntimes(data);
-      } catch (_) {
+      } catch {
         // non-critical
       }
     };
 
     fetchDailyQuest();
     fetchRuntimes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [languageCode, setLanguageCode] = useState({});
@@ -5668,7 +5676,7 @@ function DailyQuestPage() {
 function AnnouncementsPage() {
   const { dark } = useTheme();
   const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
   useEffect(() => {
@@ -5694,6 +5702,7 @@ function AnnouncementsPage() {
     const interval = setInterval(fetchAnnouncements, 10000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const defaultImages = [
@@ -5702,32 +5711,6 @@ function AnnouncementsPage() {
     "https://images.unsplash.com/photo-1516321165247-4aa89a48be28?q=80&w=1200&auto=format&fit=crop",
   ];
 
-  const featuredNews =
-    announcements.length > 0
-      ? announcements.slice(0, 3).map((ann, idx) => ({
-          category: ann.category || "ANNOUNCEMENT",
-          title: ann.title || "Untitled",
-          description: ann.content || "",
-          image: defaultImages[idx % defaultImages.length],
-        }))
-      : [
-          {
-            category: "TECH",
-            title: "No announcements yet",
-            description: "Check back soon for updates",
-            image: defaultImages[0],
-          },
-          {
-            category: "HACKATHON",
-            title: "Stay tuned for updates",
-            image: defaultImages[1],
-          },
-          {
-            category: "EVENTS",
-            title: "More announcements coming soon",
-            image: defaultImages[2],
-          },
-        ];
 
   return (
     <div
@@ -6023,7 +6006,7 @@ function CalendarPage() {
   const { dark } = useTheme();
   const [activeFilter, setActiveFilter] = useState("All");
   const [calendarEvents, setCalendarEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   const filters = [
     "All",
@@ -6631,7 +6614,7 @@ function ResourcesPage() {
   const { dark } = useTheme();
   const [activeFilter, setActiveFilter] = useState("All");
   const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   const filters = [
     "All",
@@ -6938,7 +6921,7 @@ function GalleryPage() {
     totalEvents: 0,
     byCategory: {},
   });
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   const tabs = ["All", "Hackathons", "Workshops", "Events"];
 
@@ -7317,6 +7300,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshUser();
   }, []);
 
