@@ -1,5 +1,8 @@
-import express from 'express';
+// ── dotenv MUST be loaded first before any other imports read process.env ──
 import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
 import cors from 'cors';
 import crypto from 'crypto';
 import path from 'path';
@@ -23,10 +26,7 @@ import compilerRoutes from './routes/compiler.js';
 import User from './models/User.js';
 import Quest from './models/Quest.js';
 
-// Initialize environment variables
-dotenv.config();
-
-// Validate required environment variables at startup
+// ── Validate required environment variables ────────────────────
 const REQUIRED_ENV = ['MONGO_URI', 'JWT_SECRET', 'ADMIN_SECRET_KEY'];
 for (const key of REQUIRED_ENV) {
   if (!process.env[key] || process.env[key].startsWith('REPLACE_')) {
@@ -35,35 +35,49 @@ for (const key of REQUIRED_ENV) {
   }
 }
 
-// Warn if JWT secret is too short (should be >= 32 chars)
 if (process.env.JWT_SECRET.length < 32) {
   console.error('❌ JWT_SECRET is too short. Use at least 32 random characters.');
   process.exit(1);
 }
 
-// Connect to Database
-await connectDB();
-
+// ── App setup ─────────────────────────────────────────────────
 const app = express();
 
-// ── CORS ──────────────────────────────────────────────────────
-const envOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim().replace(/\/$/, '')).filter(Boolean);
-const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
-  ? [...envOrigins, 'https://cic-club-nhitm.netlify.app']
-  : ['http://localhost:5173', 'http://localhost:3000', 'https://cic-club-nhitm.netlify.app'];
+// ── CORS — must be the very first middleware ───────────────────
+// Always include the Netlify origin; extend via ALLOWED_ORIGINS env var on Render
+const envOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 
-app.use(cors({
+const ALLOWED_ORIGINS = [
+  'https://cic-club-nhitm.netlify.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  ...envOrigins,
+];
+
+const corsOptions = {
   origin: function (origin, callback) {
+    // Allow requests with no origin (curl, Postman, server-to-server)
     if (!origin || ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
-      callback(null, false); // Do not throw error to avoid 500, just fail CORS gracefully
+      callback(null, false);
     }
   },
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200, // Some browsers (IE11) choke on 204
+};
 
-// ── Body parsing with size limits ────────────────────────────
+app.use(cors(corsOptions));
+
+// Explicitly handle all OPTIONS preflight requests before anything else
+app.options('*', cors(corsOptions));
+
+// ── Body parsing ──────────────────────────────────────────────
 app.use(express.json({ limit: '200kb' }));
 app.use(express.urlencoded({ extended: true, limit: '200kb' }));
 
@@ -75,14 +89,12 @@ if (!fs.existsSync(uploadsPath)) {
 }
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// ── Seed data (non-blocking, runs after DB connects) ──────────
+// ── Seed data (non-blocking) ──────────────────────────────────
 const seedDefaultData = async () => {
   setTimeout(async () => {
     try {
-      // Seed default admin only if none exists
       const adminCount = await User.countDocuments({ role: 'admin' });
       if (adminCount === 0) {
-        // Generate a random one-time password instead of a hardcoded one
         const tempPassword = crypto.randomBytes(12).toString('base64url');
         await User.create({
           name: 'NHITM Admin',
@@ -91,12 +103,10 @@ const seedDefaultData = async () => {
           password: tempPassword,
           role: 'admin',
         });
-        // Log the temporary password ONCE so the real admin can log in and change it
         console.log('✅ Seeded default admin: admin@nhitm.ac.in');
         console.log(`🔑 Temporary password (change immediately): ${tempPassword}`);
       }
 
-      // Seed a default quest if none exists
       const questCount = await Quest.countDocuments({});
       if (questCount === 0) {
         await Quest.create({
@@ -122,8 +132,6 @@ const seedDefaultData = async () => {
   }, 3000);
 };
 
-seedDefaultData();
-
 // ── API Routes ────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/announcements', announcementRoutes);
@@ -141,7 +149,7 @@ app.get('/', (req, res) => {
   res.send('CIC Portal Backend is running successfully!');
 });
 
-// ── Global error handler — never leaks stack traces in production ──
+// ── Global error handler ──────────────────────────────────────
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
@@ -152,7 +160,16 @@ app.use((err, req, res, next) => {
   });
 });
 
+// ── Start server, THEN connect to DB ─────────────────────────
+// Binding the port first means Render's health check passes immediately.
+// The DB connects in the background — API calls before DB is ready will
+// get a 500, but the server won't crash and CORS headers will still be sent.
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} [${process.env.NODE_ENV}]`);
+  console.log(`🚀 Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  connectDB()
+    .then(() => seedDefaultData())
+    .catch(err => {
+      console.error('❌ DB connection failed:', err.message);
+    });
 });
