@@ -1,10 +1,9 @@
 // In production, ALWAYS use the Render backend. Locally, use the Vite proxy.
 const isProd = import.meta.env.PROD;
 
-// Fallback to the known Render URL if the env var is missing/empty
-const RENDER_BACKEND = 'https://cic-website.onrender.com';
+// Using the provided backend link explicitly for all environments
+const API_BASE_URL = 'https://cic-website.onrender.com/api';
 
-const API_BASE_URL = `${import.meta.env.VITE_API_URL || RENDER_BACKEND}/api`;
 // Request helper that handles headers and returns responses
 const request = async (url, options = {}) => {
   const token = localStorage.getItem('token');
